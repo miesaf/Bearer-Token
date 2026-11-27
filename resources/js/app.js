@@ -4,43 +4,24 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-require('./bootstrap');
+import './bootstrap';
+import { createApp } from 'vue';
 
-window.Vue = require('vue');
+import ExampleComponent from './components/ExampleComponent.vue';
+import PassportClients from './components/passport/Clients.vue';
+import PassportAuthorizedClients from './components/passport/AuthorizedClients.vue';
+import PassportPersonalAccessTokens from './components/passport/PersonalAccessTokens.vue';
 
 /**
- * The following block of code may be used to automatically register your
- * Vue components. It will recursively scan this directory for the Vue
- * components and automatically register them with their "basename".
- *
- * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
+ * Next, we will create a fresh Vue application instance, register the
+ * components so they can be used in the views, and attach it to the page.
  */
 
-// const files = require.context('./', true, /\.vue$/i)
-// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
+const app = createApp({});
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+app.component('example-component', ExampleComponent);
+app.component('passport-clients', PassportClients);
+app.component('passport-authorized-clients', PassportAuthorizedClients);
+app.component('passport-personal-access-tokens', PassportPersonalAccessTokens);
 
-Vue.component(
-    'passport-clients',
-    require('./components/passport/Clients.vue').default
-);
-
-Vue.component(
-    'passport-authorized-clients',
-    require('./components/passport/AuthorizedClients.vue').default
-);
-
-Vue.component(
-    'passport-personal-access-tokens',
-    require('./components/passport/PersonalAccessTokens.vue').default
-);
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
-
-const app = new Vue({
-    el: '#app',
-});
+app.mount('#app');

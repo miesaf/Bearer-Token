@@ -36,7 +36,7 @@
                         </thead>
 
                         <tbody>
-                            <tr v-for="token in tokens">
+                            <tr v-for="token in tokens" :key="token.id">
                                 <!-- Client Name -->
                                 <td style="vertical-align: middle;">
                                     {{ token.name }}
@@ -64,7 +64,7 @@
                             Create Token
                         </h4>
 
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
                     <div class="modal-body">
@@ -73,7 +73,7 @@
                             <p class="mb-0"><strong>Whoops!</strong> Something went wrong!</p>
                             <br>
                             <ul>
-                                <li v-for="error in form.errors">
+                                <li v-for="error in form.errors" :key="error">
                                     {{ error }}
                                 </li>
                             </ul>
@@ -82,7 +82,7 @@
                         <!-- Create Token Form -->
                         <form role="form" @submit.prevent="store">
                             <!-- Name -->
-                            <div class="form-group row">
+                            <div class="row mb-3">
                                 <label class="col-md-4 col-form-label">Name</label>
 
                                 <div class="col-md-6">
@@ -91,14 +91,14 @@
                             </div>
 
                             <!-- Scopes -->
-                            <div class="form-group row" v-if="scopes.length > 0">
+                            <div class="row mb-3" v-if="scopes.length > 0">
                                 <label class="col-md-4 col-form-label">Scopes</label>
 
                                 <div class="col-md-6">
-                                    <div v-for="scope in scopes">
-                                        <div class="checkbox">
-                                            <label>
-                                                <input type="checkbox"
+                                    <div v-for="scope in scopes" :key="scope.id">
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                                <input type="checkbox" class="form-check-input"
                                                     @click="toggleScope(scope.id)"
                                                     :checked="scopeIsAssigned(scope.id)">
 
@@ -113,7 +113,7 @@
 
                     <!-- Modal Actions -->
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 
                         <button type="button" class="btn btn-primary" @click="store">
                             Create
@@ -132,7 +132,7 @@
                             Personal Access Token
                         </h4>
 
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
                     <div class="modal-body">
@@ -141,12 +141,12 @@
                             You may now use this token to make API requests.
                         </p>
 
-                        <textarea class="form-control" rows="10">{{ accessToken }}</textarea>
+                        <textarea class="form-control" rows="10" readonly :value="accessToken"></textarea>
                     </div>
 
                     <!-- Modal Actions -->
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
@@ -155,10 +155,9 @@
 </template>
 
 <script>
+    import { errorMessages, focusOnShown, hideModal, showModal } from './modal';
+
     export default {
-        /*
-         * The component's data.
-         */
         data() {
             return {
                 accessToken: null,
@@ -174,33 +173,14 @@
             };
         },
 
-        /**
-         * Prepare the component (Vue 1.x).
-         */
-        ready() {
-            this.prepareComponent();
-        },
-
-        /**
-         * Prepare the component (Vue 2.x).
-         */
         mounted() {
-            this.prepareComponent();
+            this.getTokens();
+            this.getScopes();
+
+            focusOnShown('modal-create-token', 'create-token-name');
         },
 
         methods: {
-            /**
-             * Prepare the component.
-             */
-            prepareComponent() {
-                this.getTokens();
-                this.getScopes();
-
-                $('#modal-create-token').on('shown.bs.modal', () => {
-                    $('#create-token-name').focus();
-                });
-            },
-
             /**
              * Get all of the personal access tokens for the user.
              */
@@ -225,7 +205,7 @@
              * Show the form for creating new tokens.
              */
             showCreateTokenForm() {
-                $('#modal-create-token').modal('show');
+                showModal('modal-create-token');
             },
 
             /**
@@ -242,16 +222,12 @@
                             this.form.scopes = [];
                             this.form.errors = [];
 
-                            this.tokens.push(response.data.token);
+                            this.getTokens();
 
                             this.showAccessToken(response.data.accessToken);
                         })
                         .catch(error => {
-                            if (typeof error.response.data === 'object') {
-                                this.form.errors = _.flatten(_.toArray(error.response.data.errors));
-                            } else {
-                                this.form.errors = ['Something went wrong. Please try again.'];
-                            }
+                            this.form.errors = errorMessages(error);
                         });
             },
 
@@ -260,7 +236,7 @@
              */
             toggleScope(scope) {
                 if (this.scopeIsAssigned(scope)) {
-                    this.form.scopes = _.reject(this.form.scopes, s => s == scope);
+                    this.form.scopes = this.form.scopes.filter(s => s !== scope);
                 } else {
                     this.form.scopes.push(scope);
                 }
@@ -270,18 +246,18 @@
              * Determine if the given scope has been assigned to the token.
              */
             scopeIsAssigned(scope) {
-                return _.indexOf(this.form.scopes, scope) >= 0;
+                return this.form.scopes.includes(scope);
             },
 
             /**
              * Show the given access token to the user.
              */
             showAccessToken(accessToken) {
-                $('#modal-create-token').modal('hide');
+                hideModal('modal-create-token');
 
                 this.accessToken = accessToken;
 
-                $('#modal-access-token').modal('show');
+                showModal('modal-access-token');
             },
 
             /**
@@ -289,7 +265,7 @@
              */
             revoke(token) {
                 axios.delete('/oauth/personal-access-tokens/' + token.id)
-                        .then(response => {
+                        .then(() => {
                             this.getTokens();
                         });
             }

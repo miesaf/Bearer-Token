@@ -30,14 +30,13 @@
                         <tr>
                             <th>Client ID</th>
                             <th>Name</th>
-                            <th>Secret</th>
                             <th></th>
                             <th></th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        <tr v-for="client in clients">
+                        <tr v-for="client in clients" :key="client.id">
                             <!-- ID -->
                             <td style="vertical-align: middle;">
                                 {{ client.id }}
@@ -46,11 +45,6 @@
                             <!-- Name -->
                             <td style="vertical-align: middle;">
                                 {{ client.name }}
-                            </td>
-
-                            <!-- Secret -->
-                            <td style="vertical-align: middle;">
-                                <code>{{ client.secret ? client.secret : '-' }}</code>
                             </td>
 
                             <!-- Edit Button -->
@@ -81,7 +75,7 @@
                             Create Client
                         </h4>
 
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
                     <div class="modal-body">
@@ -90,7 +84,7 @@
                             <p class="mb-0"><strong>Whoops!</strong> Something went wrong!</p>
                             <br>
                             <ul>
-                                <li v-for="error in createForm.errors">
+                                <li v-for="error in createForm.errors" :key="error">
                                     {{ error }}
                                 </li>
                             </ul>
@@ -99,7 +93,7 @@
                         <!-- Create Client Form -->
                         <form role="form">
                             <!-- Name -->
-                            <div class="form-group row">
+                            <div class="row mb-3">
                                 <label class="col-md-3 col-form-label">Name</label>
 
                                 <div class="col-md-9">
@@ -113,7 +107,7 @@
                             </div>
 
                             <!-- Redirect URL -->
-                            <div class="form-group row">
+                            <div class="row mb-3">
                                 <label class="col-md-3 col-form-label">Redirect URL</label>
 
                                 <div class="col-md-9">
@@ -121,19 +115,19 @@
                                                     @keyup.enter="store" v-model="createForm.redirect">
 
                                     <span class="form-text text-muted">
-                                        Your application's authorization callback URL.
+                                        Your application's authorization callback URL (separate several with commas).
                                     </span>
                                 </div>
                             </div>
 
                             <!-- Confidential -->
-                            <div class="form-group row">
+                            <div class="row mb-3">
                                 <label class="col-md-3 col-form-label">Confidential</label>
 
                                 <div class="col-md-9">
-                                    <div class="checkbox">
+                                    <div class="form-check">
                                         <label>
-                                            <input type="checkbox" v-model="createForm.confidential">
+                                            <input type="checkbox" class="form-check-input" v-model="createForm.confidential">
                                         </label>
                                     </div>
 
@@ -147,7 +141,7 @@
 
                     <!-- Modal Actions -->
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 
                         <button type="button" class="btn btn-primary" @click="store">
                             Create
@@ -166,7 +160,7 @@
                             Edit Client
                         </h4>
 
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
                     <div class="modal-body">
@@ -175,7 +169,7 @@
                             <p class="mb-0"><strong>Whoops!</strong> Something went wrong!</p>
                             <br>
                             <ul>
-                                <li v-for="error in editForm.errors">
+                                <li v-for="error in editForm.errors" :key="error">
                                     {{ error }}
                                 </li>
                             </ul>
@@ -184,7 +178,7 @@
                         <!-- Edit Client Form -->
                         <form role="form">
                             <!-- Name -->
-                            <div class="form-group row">
+                            <div class="row mb-3">
                                 <label class="col-md-3 col-form-label">Name</label>
 
                                 <div class="col-md-9">
@@ -198,7 +192,7 @@
                             </div>
 
                             <!-- Redirect URL -->
-                            <div class="form-group row">
+                            <div class="row mb-3">
                                 <label class="col-md-3 col-form-label">Redirect URL</label>
 
                                 <div class="col-md-9">
@@ -206,7 +200,7 @@
                                                     @keyup.enter="update" v-model="editForm.redirect">
 
                                     <span class="form-text text-muted">
-                                        Your application's authorization callback URL.
+                                        Your application's authorization callback URL (separate several with commas).
                                     </span>
                                 </div>
                             </div>
@@ -215,7 +209,7 @@
 
                     <!-- Modal Actions -->
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 
                         <button type="button" class="btn btn-primary" @click="update">
                             Save Changes
@@ -234,7 +228,7 @@
                             Client Secret
                         </h4>
 
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
                     <div class="modal-body">
@@ -243,12 +237,12 @@
                             You may now use this secret to make API requests.
                         </p>
 
-                        <input type="text" class="form-control" v-model="clientSecret">
+                        <input type="text" class="form-control" readonly :value="clientSecret">
                     </div>
 
                     <!-- Modal Actions -->
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
@@ -257,10 +251,9 @@
 </template>
 
 <script>
+    import { errorMessages, focusOnShown, hideModal, showModal } from './modal';
+
     export default {
-        /*
-         * The component's data.
-         */
         data() {
             return {
                 clients: [],
@@ -282,36 +275,14 @@
             };
         },
 
-        /**
-         * Prepare the component (Vue 1.x).
-         */
-        ready() {
-            this.prepareComponent();
-        },
-
-        /**
-         * Prepare the component (Vue 2.x).
-         */
         mounted() {
-            this.prepareComponent();
+            this.getClients();
+
+            focusOnShown('modal-create-client', 'create-client-name');
+            focusOnShown('modal-edit-client', 'edit-client-name');
         },
 
         methods: {
-            /**
-             * Prepare the component.
-             */
-            prepareComponent() {
-                this.getClients();
-
-                $('#modal-create-client').on('shown.bs.modal', () => {
-                    $('#create-client-name').focus();
-                });
-
-                $('#modal-edit-client').on('shown.bs.modal', () => {
-                    $('#edit-client-name').focus();
-                });
-            },
-
             /**
              * Get all of the OAuth clients for the user.
              */
@@ -326,7 +297,7 @@
              * Show the form for creating new clients.
              */
             showCreateClientForm() {
-                $('#modal-create-client').modal('show');
+                showModal('modal-create-client');
             },
 
             /**
@@ -337,7 +308,7 @@
                     'post',
                     '/oauth/clients',
                     this.createForm,
-                    '#modal-create-client'
+                    'modal-create-client'
                 );
             },
 
@@ -347,9 +318,9 @@
             edit(client) {
                 this.editForm.id = client.id;
                 this.editForm.name = client.name;
-                this.editForm.redirect = client.redirect;
+                this.editForm.redirect = (client.redirect_uris || []).join(',');
 
-                $('#modal-edit-client').modal('show');
+                showModal('modal-edit-client');
             },
 
             /**
@@ -360,7 +331,7 @@
                     'put',
                     '/oauth/clients/' + this.editForm.id,
                     this.editForm,
-                    '#modal-edit-client'
+                    'modal-edit-client'
                 );
             },
 
@@ -378,18 +349,14 @@
                         form.redirect = '';
                         form.errors = [];
 
-                        $(modal).modal('hide');
+                        hideModal(modal);
 
-                        if (response.data.plainSecret) {
-                            this.showClientSecret(response.data.plainSecret);
+                        if (response.data.plain_secret) {
+                            this.showClientSecret(response.data.plain_secret);
                         }
                     })
                     .catch(error => {
-                        if (typeof error.response.data === 'object') {
-                            form.errors = _.flatten(_.toArray(error.response.data.errors));
-                        } else {
-                            form.errors = ['Something went wrong. Please try again.'];
-                        }
+                        form.errors = errorMessages(error);
                     });
             },
 
@@ -399,7 +366,7 @@
             showClientSecret(clientSecret) {
                 this.clientSecret = clientSecret;
 
-                $('#modal-client-secret').modal('show');
+                showModal('modal-client-secret');
             },
 
             /**
@@ -407,7 +374,7 @@
              */
             destroy(client) {
                 axios.delete('/oauth/clients/' + client.id)
-                        .then(response => {
+                        .then(() => {
                             this.getClients();
                         });
             }

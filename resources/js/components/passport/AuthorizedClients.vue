@@ -22,7 +22,7 @@
                         </thead>
 
                         <tbody>
-                            <tr v-for="token in tokens">
+                            <tr v-for="token in tokens" :key="token.id">
                                 <!-- Client Name -->
                                 <td style="vertical-align: middle;">
                                     {{ token.client.name }}
@@ -52,37 +52,17 @@
 
 <script>
     export default {
-        /*
-         * The component's data.
-         */
         data() {
             return {
                 tokens: []
             };
         },
 
-        /**
-         * Prepare the component (Vue 1.x).
-         */
-        ready() {
-            this.prepareComponent();
-        },
-
-        /**
-         * Prepare the component (Vue 2.x).
-         */
         mounted() {
-            this.prepareComponent();
+            this.getTokens();
         },
 
         methods: {
-            /**
-             * Prepare the component (Vue 2.x).
-             */
-            prepareComponent() {
-                this.getTokens();
-            },
-
             /**
              * Get all of the authorized tokens for the user.
              */
@@ -98,7 +78,7 @@
              */
             revoke(token) {
                 axios.delete('/oauth/tokens/' + token.id)
-                        .then(response => {
+                        .then(() => {
                             this.getTokens();
                         });
             }
